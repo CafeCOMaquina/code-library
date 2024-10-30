@@ -1,3 +1,36 @@
+"""
+Descrição:
+    Este script realiza a exclusão de todos os arquivos armazenados em um cofre específico no Amazon Glacier.
+    Para garantir uma execução eficiente e em menor tempo, ele faz uso de multithreading para deletar
+    arquivos de forma paralela, aproveitando a capacidade de processamento para reduzir o tempo de espera.
+
+Funcionamento:
+    1. O script começa solicitando um inventário dos arquivos no cofre especificado. Esse inventário fornece uma
+       lista completa dos arquivos arquivados, que é necessária para identificar cada item a ser deletado.
+    2. A função `check_job_status` verifica o status do job de inventário periodicamente, a cada 30 minutos,
+       até que o inventário esteja completo.
+    3. Após a conclusão do inventário, o script obtém a lista de arquivos e inicia o processo de exclusão
+       paralela, deletando cada arquivo individualmente com o uso de múltiplas threads, otimizando o tempo
+       de processamento.
+    4. Cada thread tenta deletar um arquivo, e qualquer erro é registrado para controle.
+
+Finalidade:
+    Este script é útil para cenários onde é necessário esvaziar rapidamente um cofre no Amazon Glacier,
+    seja para liberar espaço, encerrar o uso do cofre, ou para gerenciar e manter o armazenamento de
+    forma organizada e atualizada.
+
+Requisitos:
+    - A biblioteca boto3 (para interação com a AWS).
+    - Permissões apropriadas para acesso ao Amazon Glacier e execução de operações de inventário e exclusão.
+    - Configuração de autenticação com AWS (como credenciais no arquivo de configuração ou variáveis de ambiente).
+
+Nota:
+    A utilização de multithreading acelera o processo de exclusão, mas pode ser necessário monitorar as taxas de
+    acesso da API AWS para evitar exceder os limites de solicitação e possíveis custos adicionais.
+"""
+
+
+
 import boto3
 import time
 from botocore.exceptions import ClientError
